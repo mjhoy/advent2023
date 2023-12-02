@@ -107,5 +107,6 @@ func problemTwo(content string) int {
 }
 
 func main() {
-	fmt.Println(problemTwo("input.txt"))
+	fmt.Println(problemOne("sample.txt"))
+	fmt.Println(problemTwo("sample.txt"))
 }
