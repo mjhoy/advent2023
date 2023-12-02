@@ -5,9 +5,9 @@ class Day1Spec extends AnyFunSuite {
     val input =
       Seq("1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet").iterator
 
-    val answer = Day1.process(input)
+    val answer = Day1.solve_1(input)
 
-    assert(answer == 142)
+    assert(answer == "142")
   }
 
   test("works: part 2") {
@@ -22,8 +22,8 @@ class Day1Spec extends AnyFunSuite {
         "7pqrstsixteen"
       ).iterator
 
-    val answer = Day1.process2(input)
+    val answer = Day1.solve_2(input)
 
-    assert(answer == 281)
+    assert(answer == "281")
   }
 }

@@ -1,76 +1,39 @@
 import scala.io.Source
+import scala.reflect.runtime.universe
 import cats.implicits._
+import java.io.FileNotFoundException
 
-object Main {
-  def main(args: Array[String]): Unit = {
-    (args.lift(0), args.lift(1)) match {
-      case (Some(path), Some("1")) => {
-        val answer = Day1.process(Source.fromFile(path).getLines())
-        println(answer)
-      }
-      case (Some(path), Some("2")) => {
-        val answer = Day1.process2(Source.fromFile(path).getLines())
-        println(answer)
-      }
-      case _ => System.err.println("usage: advent [file] [1|2]")
-    }
-  }
+trait Solver {
+  def solve_1(input: Iterator[String]): String = "[tbd]"
+  def solve_2(input: Iterator[String]): String = "[tbd]"
 }
 
-object Day1 {
-  def process(iter: Iterator[String]): Int = {
-    iter
-      .map(line => {
-        (line.find(_.isDigit), line.findLast(_.isDigit)).bisequence match {
-          case Some((fst, snd)) => {
-            (fst.asDigit * 10) + snd.asDigit
-          }
-          case None => 0
-        }
+object Main {
+  def err(s: String) = System.err.println(s"error: $s")
 
-      })
-      .reduceLeft(_ + _)
+  def reflect(name: String): Solver = {
+    val runtimeMirror = universe.runtimeMirror(getClass.getClassLoader)
+    val module = runtimeMirror.staticModule(name)
+    runtimeMirror.reflectModule(module).instance.asInstanceOf[Solver]
   }
 
-  def process2(iter: Iterator[String]): Int = {
-    val numberAtIndex: (String, Boolean) => PartialFunction[Int, Int] =
-      (str: String, backwards: Boolean) => {
-        def compare_at(start: Int, check: String): Boolean = {
-          val end = start + check.length()
-          if (str.length() < end) {
-            false
-          } else {
-            val checkResolved = if (backwards) check.reverse else check
-            str.substring(start, end) == checkResolved
-          }
-        }
-        {
-          case i if str.charAt(i).isDigit  => str.charAt(i).asDigit
-          case i if compare_at(i, "one")   => 1
-          case i if compare_at(i, "two")   => 2
-          case i if compare_at(i, "three") => 3
-          case i if compare_at(i, "four")  => 4
-          case i if compare_at(i, "five")  => 5
-          case i if compare_at(i, "six")   => 6
-          case i if compare_at(i, "seven") => 7
-          case i if compare_at(i, "eight") => 8
-          case i if compare_at(i, "nine")  => 9
+  def main(args: Array[String]): Unit = {
+    args.toList match {
+      case day :: half :: Nil => {
+        val objName = s"Day$day"
+        val inputFile = s"input/day_$day"
+        try {
+          val solver = reflect(objName)
+          val lines = Source.fromFile(inputFile).getLines()
+          val answer =
+            if (half == "1") solver.solve_1(lines) else solver.solve_2(lines)
+          println(answer)
+        } catch {
+          case e: ScalaReflectionException => err(s"no object $objName")
+          case e: FileNotFoundException    => err(s"no input $inputFile")
         }
       }
-
-    iter
-      .map(line => {
-        (
-          line.indices.collectFirst(numberAtIndex(line, false)),
-          line.indices.collectFirst(numberAtIndex(line.reverse, true))
-        ).bisequence match {
-          case Some((fst, snd)) => {
-            (fst * 10) + snd
-          }
-          case None => 0
-        }
-
-      })
-      .reduceLeft(_ + _)
+      case _ => err("usage: advent [day] [1|2]")
+    }
   }
 }
