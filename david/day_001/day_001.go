@@ -50,10 +50,7 @@ func getSingleInt(intChars int, toReturn string) int {
 		log.Fatal("toReturn must be either 'first' or 'last'")
 	}
 	resByte := fmt.Sprint(intChars)[idx]
-	result, error := strconv.Atoi(string(resByte))
-	if error != nil {
-		log.Fatal(error)
-	}
+	result, _ := strconv.Atoi(string(resByte))
 	return result
 }
 
