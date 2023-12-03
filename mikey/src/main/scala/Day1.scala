@@ -1,4 +1,3 @@
-import scala.io.Source
 import cats.implicits._
 
 object Day1 extends Solver {

@@ -1,5 +1,4 @@
 import cats.implicits._
-import cats.data.{State, EitherT}
 
 object Day2 extends Solver {
   // P: a lil parser combinator library
@@ -7,11 +6,12 @@ object Day2 extends Solver {
     case class Err(str: String)
     type Parser[A] = String => Either[Err, (A, String)]
 
-    def *>[A, B](fst: Parser[A], snd: Parser[B]): Parser[B] = { input =>
-      for {
-        a <- fst(input)
-        b <- snd(a._2)
-      } yield b
+    def ignoreFirst[A, B](fst: Parser[A], snd: Parser[B]): Parser[B] = {
+      input =>
+        for {
+          a <- fst(input)
+          b <- snd(a._2)
+        } yield b
     }
 
     def many[A](p: Parser[A]): Parser[List[A]] = { input =>
@@ -30,7 +30,7 @@ object Day2 extends Solver {
         case Left(_) => Right((List.empty, input))
         case Right((a, rest)) => {
           for {
-            as <- many(*>(sep, p))(rest)
+            as <- many(ignoreFirst(sep, p))(rest)
           } yield (a :: as._1, as._2)
         }
       }
@@ -68,7 +68,7 @@ object Day2 extends Solver {
   object BagParsers {
     import P._
 
-    val game: Parser[Int] = *>(str("Game "), number)
+    val game: Parser[Int] = ignoreFirst(str("Game "), number)
     val cubeReach: Parser[(String, Int)] = { input =>
       for {
         n <- number(input)
