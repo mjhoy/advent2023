@@ -24,6 +24,7 @@ object Day3 extends Solver {
     def apply[A](): BufMap[A] = BufMap(Map())
   }
 
+  // Build two maps for numbers and symbols, indexed by row #
   def buildMaps(
       input: Iterator[String]
   ): (BufMap[(Int, Int)], BufMap[(Int, Char)]) = {
@@ -61,27 +62,27 @@ object Day3 extends Solver {
       .map({
         case (row, rowNums) => {
           rowNums
-            .map({
+            .filter({
               case (value, col) => {
                 val length = log10(value).toInt + 1
-                val touchingSymbol = Seq(row - 1, row, row + 1).exists(r => {
+                Seq(row - 1, row, row + 1).exists(r => {
                   symbols
                     .get(r)
                     .exists(symbol =>
                       (symbol._1 >= col - 1) && (symbol._1 <= col + length)
                     )
                 })
-                if (touchingSymbol) {
-                  value
-                } else {
-                  0
-                }
               }
             })
-            .reduceLeft(_ + _)
+            .map({
+              case (value, col) => {
+                value
+              }
+            })
+            .sum
         }
       })
-      .reduceLeft(_ + _)
+      .sum
       .toString()
   }
 
@@ -114,10 +115,10 @@ object Day3 extends Solver {
                 }
               }
             })
-            .foldLeft(0)(_ + _)
+            .sum
         }
       })
-      .foldLeft(0)(_ + _)
+      .sum
       .toString()
   }
 }
