@@ -59,7 +59,7 @@ object Day3 extends Solver {
 
     // Map over each number, and see if a symbol is touching it.
     nums.inner
-      .map({
+      .flatMap({
         case (row, rowNums) => {
           rowNums
             .filter({
@@ -74,12 +74,7 @@ object Day3 extends Solver {
                 })
               }
             })
-            .map({
-              case (value, col) => {
-                value
-              }
-            })
-            .sum
+            .map(_._1)
         }
       })
       .sum
@@ -92,13 +87,13 @@ object Day3 extends Solver {
     // Map over each symbol; for every *, see if two numbers are
     // touching it.
     symbols.inner
-      .map({
+      .flatMap({
         case (row, symbols) => {
           symbols
-            .filter({ case (_, symbol) => { symbol == '*' } })
+            .filter(_._2 == '*')
             .map({
               case (col, symbol) => {
-                val touchingNums = Seq(row - 1, row, row + 1).flatMap(r => {
+                Seq(row - 1, row, row + 1).flatMap(r => {
                   nums
                     .get(r)
                     .filter({
@@ -107,15 +102,12 @@ object Day3 extends Solver {
                         (col >= numCol - 1) && (col <= numCol + length)
                       }
                     })
+                    .map(_._1)
                 })
-                if (touchingNums.length == 2) {
-                  touchingNums.map({ case (value, numCol) => value }).product
-                } else {
-                  0
-                }
               }
             })
-            .sum
+            .filter(_.length == 2)
+            .map(_.product)
         }
       })
       .sum
