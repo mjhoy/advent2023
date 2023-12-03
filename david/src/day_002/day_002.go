@@ -43,13 +43,13 @@ func problemOne(content string) int {
 			var blue int = 0
 			splitLines := strings.Split(game, " ")
 			for idx, word := range splitLines {
-				if word == "red" || word == "red," {
+				if strings.Contains(word, "red") {
 					redVal, _ := strconv.Atoi(splitLines[idx-1])
 					red += redVal
-				} else if word == "green" || word == "green," {
+				} else if strings.Contains(word, "green") {
 					greenVal, _ := strconv.Atoi(splitLines[idx-1])
 					green += greenVal
-				} else if word == "blue" || word == "blue," {
+				} else if strings.Contains(word, "blue") {
 					blueVal, _ := strconv.Atoi(splitLines[idx-1])
 					blue += blueVal
 				}
@@ -63,6 +63,13 @@ func problemOne(content string) int {
 		}
 	}
 	return result
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 
 func problemTwo(content string) int {
@@ -89,15 +96,9 @@ func problemTwo(content string) int {
 					blueGame += blueVal
 				}
 			}
-			if blueGame > blue {
-				blue = blueGame
-			}
-			if greenGame > green {
-				green = greenGame
-			}
-			if redGame > red {
-				red = redGame
-			}
+			red = max(red, redGame)
+			green = max(green, greenGame)
+			blue = max(blue, blueGame)
 		}
 		power := red * green * blue
 		result += power
