@@ -24,9 +24,11 @@ object Day3 extends Solver {
     def apply[A](): BufMap[A] = BufMap(Map())
   }
 
-  override def solve_1(input: Iterator[String]): String = {
+  def buildMaps(
+      input: Iterator[String]
+  ): (BufMap[(Int, Int)], BufMap[(Int, Char)]) = {
     val nums: BufMap[(Int, Int)] = BufMap()
-    val symbols: BufMap[Int] = BufMap()
+    val symbols: BufMap[(Int, Char)] = BufMap()
 
     for ((line, row) <- input.zipWithIndex) {
       var idx = 0
@@ -36,15 +38,25 @@ object Day3 extends Solver {
         if (digits.length() > 0) {
           nums.insert(row, (digits.toInt, idx))
           idx += digits.length()
-        } else if (line.charAt(idx) == '.') {
-          idx += 1
         } else {
-          symbols.insert(row, idx)
-          idx += 1
+          val char = line.charAt(idx)
+          if (char == '.') {
+            idx += 1
+          } else {
+            symbols.insert(row, (idx, char))
+            idx += 1
+          }
         }
       }
     }
 
+    (nums, symbols)
+  }
+
+  override def solve_1(input: Iterator[String]): String = {
+    val (nums, symbols) = buildMaps(input)
+
+    // Map over each number, and see if a symbol is touching it.
     nums.inner
       .map({
         case (row, rowNums) => {
@@ -55,8 +67,8 @@ object Day3 extends Solver {
                 val touchingSymbol = Seq(row - 1, row, row + 1).exists(r => {
                   symbols
                     .get(r)
-                    .exists(symbolCol =>
-                      (symbolCol >= col - 1) && (symbolCol <= col + length)
+                    .exists(symbol =>
+                      (symbol._1 >= col - 1) && (symbol._1 <= col + length)
                     )
                 })
                 if (touchingSymbol) {
@@ -70,6 +82,42 @@ object Day3 extends Solver {
         }
       })
       .reduceLeft(_ + _)
+      .toString()
+  }
+
+  override def solve_2(input: Iterator[String]): String = {
+    val (nums, symbols) = buildMaps(input)
+
+    // Map over each symbol; for every *, see if two numbers are
+    // touching it.
+    symbols.inner
+      .map({
+        case (row, symbols) => {
+          symbols
+            .filter({ case (_, symbol) => { symbol == '*' } })
+            .map({
+              case (col, symbol) => {
+                val touchingNums = Seq(row - 1, row, row + 1).flatMap(r => {
+                  nums
+                    .get(r)
+                    .filter({
+                      case (value, numCol) => {
+                        val length = log10(value).toInt + 1
+                        (col >= numCol - 1) && (col <= numCol + length)
+                      }
+                    })
+                })
+                if (touchingNums.length == 2) {
+                  touchingNums.map({ case (value, numCol) => value }).product
+                } else {
+                  0
+                }
+              }
+            })
+            .foldLeft(0)(_ + _)
+        }
+      })
+      .foldLeft(0)(_ + _)
       .toString()
   }
 }
