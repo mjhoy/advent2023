@@ -10,7 +10,7 @@ import (
 )
 
 // create a full 2D array of the txt file
-func txtFileReader(txtFile string) [][]rune {
+func TxtFileReader(txtFile string) [][]rune {
 	content, error := ioutil.ReadFile(txtFile)
 	if error != nil {
 		log.Fatal(error)
@@ -25,7 +25,7 @@ func txtFileReader(txtFile string) [][]rune {
 }
 
 // combine all adjacent digits into a single number and return the number and the indices of the digits
-func combineAllAdjacentDigits(idx int, line []rune) (int, []int) {
+func CombineAllAdjacentDigits(idx int, line []rune) (int, []int) {
 	left, right := idx, idx
 	for left >= 0 && unicode.IsDigit(line[left]) {
 		left--
@@ -40,7 +40,7 @@ func combineAllAdjacentDigits(idx int, line []rune) (int, []int) {
 	return num, []int{left + 1, right - 1}
 }
 
-func checkAdjacentCells(i, j int, matrix [][]rune, visited map[Pair]bool, partOne bool) ([]int, []Pair) {
+func CheckAdjacentCells(i, j int, matrix [][]rune, visited map[Pair]bool, partOne bool) ([]int, []Pair) {
 	// store map of visited indices in a map
 	pairs := []Pair{}
 	var res = []int{}
@@ -59,7 +59,7 @@ func checkAdjacentCells(i, j int, matrix [][]rune, visited map[Pair]bool, partOn
 		if ni >= 0 && ni < len(matrix) && nj >= 0 && nj < len(matrix[0]) {
 			if unicode.IsDigit(matrix[ni][nj]) {
 				if !visited[Pair{ni, nj}] {
-					dig, indices := combineAllAdjacentDigits(nj, matrix[ni])
+					dig, indices := CombineAllAdjacentDigits(nj, matrix[ni])
 					// add all values between the indices to the visited map
 					for idx := indices[0]; idx <= indices[1]; idx++ {
 						visited[Pair{ni, idx}] = true
@@ -77,22 +77,22 @@ type Pair struct {
 	First, Second int
 }
 
-func solution(content string, partOne bool) int {
-	matrix := txtFileReader(content)
+func Solution(content string, partOne bool) int {
+	matrix := TxtFileReader(content)
 	visited := make(map[Pair]bool)
 	var result int = 0
 	for i := 0; i < len(matrix); i++ {
 		for idx, char := range matrix[i] {
 			if partOne {
 				if char != '.' && (unicode.IsSymbol(char) || unicode.IsPunct(char)) {
-					digits, _ := checkAdjacentCells(i, idx, matrix, visited, partOne)
+					digits, _ := CheckAdjacentCells(i, idx, matrix, visited, partOne)
 					for _, digit := range digits {
 						result += digit
 					}
 				}
 			} else {
 				if char == '*' {
-					digits, pairs := checkAdjacentCells(i, idx, matrix, visited, partOne)
+					digits, pairs := CheckAdjacentCells(i, idx, matrix, visited, partOne)
 					if len(digits) != 2 {
 						for _, pair := range pairs {
 							delete(visited, pair)
@@ -109,6 +109,6 @@ func solution(content string, partOne bool) int {
 }
 
 func main() {
-	fmt.Println(solution("sample.txt", true))
-	fmt.Println(solution("sample.txt", false))
+	fmt.Println(Solution("sample.txt", true))
+	fmt.Println(Solution("sample.txt", false))
 }

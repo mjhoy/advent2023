@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func txtFileReader(txtFile string) []string {
+func TxtFileReader(txtFile string) []string {
 	content, error := ioutil.ReadFile(txtFile)
 	if error != nil {
 		log.Fatal(error)
@@ -17,8 +17,8 @@ func txtFileReader(txtFile string) []string {
 	return contentArray
 }
 
-func parseLines(content string) map[int][]string {
-	contentArray := txtFileReader(content)
+func ParseLines(content string) map[int][]string {
+	contentArray := TxtFileReader(content)
 	result := make(map[int][]string)
 	for _, line := range contentArray {
 		splitLine := strings.Split(line, ":")
@@ -28,12 +28,12 @@ func parseLines(content string) map[int][]string {
 	return result
 }
 
-func problemOne(content string) int {
+func ProblemOne(content string) int {
 	RED := 12
 	GREEN := 13
 	BLUE := 14
 	var result int = 0
-	parsedLines := parseLines(content)
+	parsedLines := ParseLines(content)
 	for gameKey := range parsedLines {
 
 		var toAdd bool = true
@@ -72,9 +72,9 @@ func max(a, b int) int {
 	return b
 }
 
-func problemTwo(content string) int {
+func ProblemTwo(content string) int {
 	var result int = 0
-	parsedLines := parseLines(content)
+	parsedLines := ParseLines(content)
 	for gameKey := range parsedLines {
 		var red int = 0
 		var green int = 0
@@ -108,6 +108,6 @@ func problemTwo(content string) int {
 }
 
 func main() {
-	fmt.Println(problemOne("sample.txt"))
-	fmt.Println(problemTwo("sample.txt"))
+	fmt.Println(ProblemOne("sample.txt"))
+	fmt.Println(ProblemTwo("sample.txt"))
 }
