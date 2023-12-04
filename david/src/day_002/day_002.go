@@ -1,24 +1,18 @@
-package main
+// Creator: david
+// Date: 2023-12-2
+// Purpose: day 2 of advent of code 2023
+
+package day_002
 
 import (
+	"david/src/utils"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strconv"
 	"strings"
 )
 
-func txtFileReader(txtFile string) []string {
-	content, error := ioutil.ReadFile(txtFile)
-	if error != nil {
-		log.Fatal(error)
-	}
-	contentArray := strings.Split(string(content[:]), "\n")
-	return contentArray
-}
-
-func parseLines(content string) map[int][]string {
-	contentArray := txtFileReader(content)
+func ParseLines(content string) map[int][]string {
+	contentArray := utils.TxtFileReader(content)
 	result := make(map[int][]string)
 	for _, line := range contentArray {
 		splitLine := strings.Split(line, ":")
@@ -28,12 +22,12 @@ func parseLines(content string) map[int][]string {
 	return result
 }
 
-func problemOne(content string) int {
+func ProblemOne(content string) int {
 	RED := 12
 	GREEN := 13
 	BLUE := 14
 	var result int = 0
-	parsedLines := parseLines(content)
+	parsedLines := ParseLines(content)
 	for gameKey := range parsedLines {
 
 		var toAdd bool = true
@@ -43,13 +37,13 @@ func problemOne(content string) int {
 			var blue int = 0
 			splitLines := strings.Split(game, " ")
 			for idx, word := range splitLines {
-				if word == "red" || word == "red," {
+				if strings.Contains(word, "red") {
 					redVal, _ := strconv.Atoi(splitLines[idx-1])
 					red += redVal
-				} else if word == "green" || word == "green," {
+				} else if strings.Contains(word, "green") {
 					greenVal, _ := strconv.Atoi(splitLines[idx-1])
 					green += greenVal
-				} else if word == "blue" || word == "blue," {
+				} else if strings.Contains(word, "blue") {
 					blueVal, _ := strconv.Atoi(splitLines[idx-1])
 					blue += blueVal
 				}
@@ -65,9 +59,16 @@ func problemOne(content string) int {
 	return result
 }
 
-func problemTwo(content string) int {
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func ProblemTwo(content string) int {
 	var result int = 0
-	parsedLines := parseLines(content)
+	parsedLines := ParseLines(content)
 	for gameKey := range parsedLines {
 		var red int = 0
 		var green int = 0
@@ -89,15 +90,9 @@ func problemTwo(content string) int {
 					blueGame += blueVal
 				}
 			}
-			if blueGame > blue {
-				blue = blueGame
-			}
-			if greenGame > green {
-				green = greenGame
-			}
-			if redGame > red {
-				red = redGame
-			}
+			red = max(red, redGame)
+			green = max(green, greenGame)
+			blue = max(blue, blueGame)
 		}
 		power := red * green * blue
 		result += power
@@ -107,6 +102,6 @@ func problemTwo(content string) int {
 }
 
 func main() {
-	fmt.Println(problemOne("sample.txt"))
-	fmt.Println(problemTwo("sample.txt"))
+	fmt.Println(ProblemOne("sample.txt"))
+	fmt.Println(ProblemTwo("sample.txt"))
 }

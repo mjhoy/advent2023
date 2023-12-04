@@ -1,26 +1,17 @@
 // Creator: david
-// Date: 2021-09-30
-// Purpose: day 1 of advent of code 2021
+// Date: 2023-12-1
+// Purpose: day 1 of advent of code 2023
 
-package main
+package day_001
 
 import (
+	"david/src/utils"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"regexp"
 	"strconv"
 	"strings"
 )
-
-func txtFileReader(txtFile string) []string {
-	content, error := ioutil.ReadFile(txtFile)
-	if error != nil {
-		log.Fatal(error)
-	}
-	contentArray := strings.Split(string(content[:]), "\n")
-	return contentArray
-}
 
 var NUMBERS = map[string]int{
 	"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
@@ -43,7 +34,7 @@ func reverse(s string) string {
 }
 
 // convenience function to get first or last int from a string
-func getSingleInt(intChars int, toReturn string) int {
+func GetSingleInt(intChars int, toReturn string) int {
 	var idx int = 0
 	if toReturn == "last" {
 		idx = len(fmt.Sprint(intChars)) - 1
@@ -56,17 +47,17 @@ func getSingleInt(intChars int, toReturn string) int {
 }
 
 // sum first and last ints in each line of txt file
-func sumFirstLastInts(content string) int {
-	contentArray := txtFileReader(content)
+func SumFirstLastInts(content string) int {
+	contentArray := utils.TxtFileReader(content)
 	var res int
 	for _, line := range contentArray {
 		var temp string
 		re := regexp.MustCompile(`\d+`) // find all ints in string
 		strs := re.FindAllString(line, -1)
 		first, _ := strconv.Atoi(fmt.Sprint(strs[0]))
-		temp += fmt.Sprint(getSingleInt(first, "first")) // get single integer from larger possible number
+		temp += fmt.Sprint(GetSingleInt(first, "first")) // get single integer from larger possible number
 		last, _ := strconv.Atoi(strs[len(strs)-1])
-		temp += fmt.Sprint(getSingleInt(last, "last"))
+		temp += fmt.Sprint(GetSingleInt(last, "last"))
 		tempInt, _ := strconv.Atoi(temp)
 		res += tempInt
 	}
@@ -74,8 +65,8 @@ func sumFirstLastInts(content string) int {
 }
 
 // sum first and last ints in each line of txt file, including ints in strings
-func sumFirstLastIntsWithStr(content string) int {
-	contentArray := txtFileReader(content)
+func SumFirstLastIntsWithStr(content string) int {
+	contentArray := utils.TxtFileReader(content)
 	var res int
 	for _, line := range contentArray {
 		reversed := reverse(line)
@@ -88,9 +79,9 @@ func sumFirstLastIntsWithStr(content string) int {
 		strs := re.FindAllString(line, -1)
 		if len(strs) != 0 {
 			first, _ := strconv.Atoi(fmt.Sprint(strs[0]))
-			firstInt = getSingleInt(first, "first")
+			firstInt = GetSingleInt(first, "first")
 			last, _ := strconv.Atoi(strs[len(strs)-1])
-			lastInt = getSingleInt(last, "last")
+			lastInt = GetSingleInt(last, "last")
 			firstIdx = strings.Index(line, fmt.Sprint(firstInt))
 			lastIdx = strings.Index(reversed, fmt.Sprint(lastInt))
 		}
@@ -100,7 +91,7 @@ func sumFirstLastIntsWithStr(content string) int {
 			if key == "zero" || idx == -1 {
 				continue
 			} else if idx < firstIdx {
-				firstInt = getSingleInt(NUMBERS[key], "first")
+				firstInt = GetSingleInt(NUMBERS[key], "first")
 				firstIdx = idx
 			}
 		}
@@ -109,13 +100,12 @@ func sumFirstLastIntsWithStr(content string) int {
 			if reverseIdx == -1 {
 				continue
 			} else if reverseIdx < lastIdx {
-				lastInt = getSingleInt(NUMBERS[key], "last")
+				lastInt = GetSingleInt(NUMBERS[key], "last")
 				lastIdx = reverseIdx
 			}
 		}
 		temp += fmt.Sprint(firstInt)
 		temp += fmt.Sprint(lastInt)
-		fmt.Println(temp)
 		tempInt, _ := strconv.Atoi(temp)
 		res += tempInt
 	}
@@ -125,6 +115,6 @@ func sumFirstLastIntsWithStr(content string) int {
 // read input txt file
 func main() {
 	//part 1
-	fmt.Println(sumFirstLastInts("sample.txt"))
-	fmt.Println(sumFirstLastIntsWithStr("sample2.txt"))
+	fmt.Println(SumFirstLastInts("sample.txt"))
+	fmt.Println(SumFirstLastIntsWithStr("sample2.txt"))
 }
