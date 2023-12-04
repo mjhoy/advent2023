@@ -16,7 +16,7 @@ from utils import *
 data = loadtxt('Files/input_day3.txt')
 # data = loadtxt('Files/test_day3.txt') # Test
 
-# %%%%%%%%%%%%%%%%%%%% Clean Data
+# %%%%%%%%%%%%%%%%%%%% Clean data and convert to matrix
 
 # separate characters into list
 data_split = data.copy()
@@ -64,7 +64,7 @@ number_list = []
 for i in range(location_mat.shape[0]):
     k2 = 0 # initialize
     for j in range(location_mat.shape[1]):
-        if j <= k2: continue # skip to next number if a number has already been discovered
+        if j <= k2: continue # skip to next potential location if a number has already been discovered
         
         if location_mat[i,j] == 1: # check potential location
             if data_mat[i,j] >= 10: # not a number
@@ -81,7 +81,7 @@ for i in range(location_mat.shape[0]):
                 while data_mat[i,k2] < 10 and k2 < data_mat.shape[1]-1:
                     k2+=1
 
-                if (data_mat[i,k2] < 10) and (k2 == data_mat.shape[1]-1): k2 +=1
+                if (data_mat[i,k2] < 10) and (k2 == data_mat.shape[1]-1): k2 +=1 # last col of matrix
 
                 number = list(map(str,data_mat[i,k1+1:k2].tolist()))
                 number = int("".join(number))
