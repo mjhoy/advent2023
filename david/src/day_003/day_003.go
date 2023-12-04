@@ -1,28 +1,15 @@
-package main
+// Creator: david
+// Date: 2023-12-3
+// Purpose: day 3 of advent of code 2023
+
+package day_003
 
 import (
+	"david/src/utils"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strconv"
-	"strings"
 	"unicode"
 )
-
-// create a full 2D array of the txt file
-func TxtFileReader(txtFile string) [][]rune {
-	content, error := ioutil.ReadFile(txtFile)
-	if error != nil {
-		log.Fatal(error)
-	}
-	var res = [][]rune{}
-	contentArray := strings.Split(string(content[:]), "\n")
-	for _, line := range contentArray {
-		runeArray := []rune(line)
-		res = append(res, runeArray)
-	}
-	return res
-}
 
 // combine all adjacent digits into a single number and return the number and the indices of the digits
 func CombineAllAdjacentDigits(idx int, line []rune) (int, []int) {
@@ -78,7 +65,7 @@ type Pair struct {
 }
 
 func Solution(content string, partOne bool) int {
-	matrix := TxtFileReader(content)
+	matrix := utils.TxtFileToRuneMatrix(content)
 	visited := make(map[Pair]bool)
 	var result int = 0
 	for i := 0; i < len(matrix); i++ {

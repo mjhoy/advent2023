@@ -1,26 +1,17 @@
 // Creator: david
-// Date: 2021-09-30
-// Purpose: day 1 of advent of code 2021
+// Date: 2023-12-1
+// Purpose: day 1 of advent of code 2023
 
-package main
+package day_001
 
 import (
+	"david/src/utils"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"regexp"
 	"strconv"
 	"strings"
 )
-
-func TxtFileReader(txtFile string) []string {
-	content, error := ioutil.ReadFile(txtFile)
-	if error != nil {
-		log.Fatal(error)
-	}
-	contentArray := strings.Split(string(content[:]), "\n")
-	return contentArray
-}
 
 var NUMBERS = map[string]int{
 	"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
@@ -57,7 +48,7 @@ func GetSingleInt(intChars int, toReturn string) int {
 
 // sum first and last ints in each line of txt file
 func SumFirstLastInts(content string) int {
-	contentArray := TxtFileReader(content)
+	contentArray := utils.TxtFileReader(content)
 	var res int
 	for _, line := range contentArray {
 		var temp string
@@ -75,7 +66,7 @@ func SumFirstLastInts(content string) int {
 
 // sum first and last ints in each line of txt file, including ints in strings
 func SumFirstLastIntsWithStr(content string) int {
-	contentArray := TxtFileReader(content)
+	contentArray := utils.TxtFileReader(content)
 	var res int
 	for _, line := range contentArray {
 		reversed := reverse(line)
@@ -115,7 +106,6 @@ func SumFirstLastIntsWithStr(content string) int {
 		}
 		temp += fmt.Sprint(firstInt)
 		temp += fmt.Sprint(lastInt)
-		fmt.Println(temp)
 		tempInt, _ := strconv.Atoi(temp)
 		res += tempInt
 	}

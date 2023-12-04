@@ -1,24 +1,18 @@
-package main
+// Creator: david
+// Date: 2023-12-2
+// Purpose: day 2 of advent of code 2023
+
+package day_002
 
 import (
+	"david/src/utils"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strconv"
 	"strings"
 )
 
-func TxtFileReader(txtFile string) []string {
-	content, error := ioutil.ReadFile(txtFile)
-	if error != nil {
-		log.Fatal(error)
-	}
-	contentArray := strings.Split(string(content[:]), "\n")
-	return contentArray
-}
-
 func ParseLines(content string) map[int][]string {
-	contentArray := TxtFileReader(content)
+	contentArray := utils.TxtFileReader(content)
 	result := make(map[int][]string)
 	for _, line := range contentArray {
 		splitLine := strings.Split(line, ":")
