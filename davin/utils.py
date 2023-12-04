@@ -1,4 +1,23 @@
 
+#############################################################
+# IO
+#############################################################
+
+def loadtxt(path, strip = True):
+    # returns list of strings, each element is a line
+    file = open(path, 'r')
+    content = file.readlines()
+    file.close()
+
+    # remove newline
+    if strip:
+        for i,line in enumerate(content):
+            content[i] = line.strip()
+
+    return content
+
+
+
 
 
 #############################################################
