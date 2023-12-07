@@ -13,6 +13,7 @@ class DaysSpec extends AnyFunSuite {
     val half = parts(1)
 
     test(s"Day $day part $half") {
+      println(s"Day $day part $half")
       val solver = Main.reflect(s"Day$day")
       val lines = Source.fromFile(file.toString()).getLines()
       var inputFinished = false
