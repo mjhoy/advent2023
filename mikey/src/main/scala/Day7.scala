@@ -14,14 +14,12 @@ object Day7 extends Solver {
 
       val resolved =
         if (otherGroups.nonEmpty) { // add wildcards to the next best group
-          otherGroups.toList.sortBy(_._2).reverse.map { case (_, len) =>
-            len
-          } match {
+          otherGroups.toList.map(_._2).sorted.reverse match {
             case head :: rest => head + wildcards :: rest
             case x            => x
           }
         } else {
-          groups.toList.map { case (_, vs) => vs }.sorted.reverse
+          groups.toList.map(_._2).sorted.reverse
         }
 
       resolved match {
@@ -45,16 +43,14 @@ object Day7 extends Solver {
         bid: Int,
         jokersAreWildcard: Boolean
     ): Option[Hand] = {
-      val values = string
-        .map(_ match {
-          case 'A' => 14
-          case 'K' => 13
-          case 'Q' => 12
-          case 'J' => if (jokersAreWildcard) 1 else 11
-          case 'T' => 10
-          case x   => x.asDigit
-        })
-        .toList
+      val values = string.map {
+        case 'A' => 14
+        case 'K' => 13
+        case 'Q' => 12
+        case 'J' => if (jokersAreWildcard) 1 else 11
+        case 'T' => 10
+        case x   => x.asDigit
+      }.toList
 
       values match {
         case a :: b :: c :: d :: e :: Nil => Some(Hand((a, b, c, d, e), bid))
